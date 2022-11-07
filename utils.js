@@ -1,3 +1,5 @@
+let div;
+
 function randomIntFromInterval(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min)
 }
@@ -84,6 +86,19 @@ function setup(layer, lostTileId, tilePositions) {
   const invisibleTiles = Array.from(tiles).filter(tile => ![...visibleTiles, lostTile].map(tile => tile.src).includes(tile.src));
   lostTile.classList.add("lost-tile");
   invisibleTiles.forEach((tile => tile.style.display = 'none'));
+
+  const container = visibleTiles[0].parentNode;
+  if (div) div.parentNode.removeChild(div);
+  div = document.createElement("div");
+  const tileHeight = Number(visibleTiles[0].style.height.replace('px', ''));
+  div.id = 'puzzle-background';
+  div.style.transform = transforms[0];
+  div.style.height = `${tileHeight*3}px`;
+  div.style.width = `${tileHeight*3}px`;
+  div.style.background = 'white';
+  div.style.position = 'absolute';
+  div.style.zIndex = -1;
+  container.appendChild(div);
 
   return { visibleTiles, lostTile, lostTileId };
 }
