@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Sliding tiles puzzle</title>
+    <title>Raster Tiles Puzzle</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css" integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14=" crossorigin=""/>
     <style>
       body { margin: 0; padding: 0; }
@@ -14,8 +14,11 @@
         background-image: url('./img/Oak-Architextures.jpg');
         background-size: 1000px;
       }
-      .leaflet-tile { 
-        border: 1px solid black
+      .lost-tile {
+        display: none;
+      }
+      .leaflet-grab {
+        cursor: pointer;
       }
     </style>
   </head>

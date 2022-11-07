@@ -1,4 +1,4 @@
-import { hideUselessTiles, showAllTiles } from './utils.js';
+import { setup, showAllTiles, moveTile, randomIntFromInterval, shuffleArray } from './utils.js';
 
 const layer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     minZoom: 3,
@@ -16,13 +16,32 @@ const map = L.map('map', {
   zoom: 7,
   layers: [layer],
   zoomControl: false,
+  maxBoundsViscosity: 1,
 });
 
-layer.once('load', () => hideUselessTiles(layer));
+let lostTileId = null;
+const tilePositions = shuffleArray([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+
+let visibleTiles;
+let lostTile;
+
+const setTiles = (layer) => {
+  const tiles = setup(layer, lostTileId, tilePositions);
+  if (!tiles) return;
+  visibleTiles = tiles.visibleTiles;
+  lostTile = tiles.lostTile;
+  lostTileId = tiles.lostTileId;
+}
+
+layer.once('load', () => setTiles(layer));
 map.on("movestart", () => showAllTiles());
 map.on("zoomstart", () => showAllTiles());
 
-map.on("moveend", () => hideUselessTiles(layer));
-map.on("zoomend", () => hideUselessTiles(layer));
+map.on("moveend", () => setTiles(layer));
+map.on("zoomend", () => setTiles(layer));
 
-// map.on("mouseup", () => console.log(map.getCenter(), map.getZoom()));
+map.on("click", (e) => {
+  const tiles = moveTile(e, visibleTiles, lostTile, tilePositions);
+  visibleTiles = tiles.visibleTiles;
+  lostTile = tiles.lostTile;
+});
